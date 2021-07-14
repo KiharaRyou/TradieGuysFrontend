@@ -18,6 +18,7 @@ import RightContent from '@/components/GlobalHeader/RightContent';
 import type { ConnectState } from '@/models/connect';
 import { getMatchMenu } from '@umijs/route-utils';
 import logo from '../assets/logo.svg';
+import user from 'mock/user';
 
 const noMatch = (
   <Result
@@ -60,22 +61,30 @@ const defaultFooterDom = (
   />
 );
 
-const BasicLayout: React.FC<BasicLayoutProps> = (props) => {
+const DashboardLayout: React.FC<BasicLayoutProps> = (props) => {
   const {
     dispatch,
     children,
     settings,
+    currentUser,
     location = {
       pathname: '/',
     },
   } = props;
   const menuDataRef = useRef<MenuDataItem[]>([]);
   useEffect(() => {
+    const token = localStorage.getItem('token');
     if (dispatch) {
-      dispatch({
-        type: 'user/fetchCurrent',
-      });
-    }
+      if(token && !(currentUser && currentUser.username)) {
+        dispatch({
+          type: 'user/fetchCurrent',
+        });
+      } else {
+        dispatch({
+          type: 'user/logOut',
+        });
+      }
+    }  
   }, []);
   /** Init variables */
 
@@ -151,7 +160,7 @@ const BasicLayout: React.FC<BasicLayoutProps> = (props) => {
           {children}
         </Authorized>
       </ProLayout>
-      <SettingDrawer
+      {/* <SettingDrawer
         settings={settings}
         onSettingChange={(config) =>
           dispatch({
@@ -159,12 +168,13 @@ const BasicLayout: React.FC<BasicLayoutProps> = (props) => {
             payload: config,
           })
         }
-      />
+      /> */}
     </>
   );
 };
 
-export default connect(({ global, settings }: ConnectState) => ({
+export default connect(({ global, settings, user }: ConnectState) => ({
   collapsed: global.collapsed,
   settings,
-}))(BasicLayout);
+  currentUser: user.currentUser
+}))(DashboardLayout);

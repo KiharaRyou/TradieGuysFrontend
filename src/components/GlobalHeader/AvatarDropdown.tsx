@@ -35,7 +35,7 @@ class AvatarDropdown extends React.Component<GlobalHeaderRightProps> {
       return;
     }
 
-    history.push(`/account/${key}`);
+    history.push(`/${key}`);
   };
 
   render(): React.ReactNode {
@@ -49,7 +49,7 @@ class AvatarDropdown extends React.Component<GlobalHeaderRightProps> {
     const menuHeaderDropdown = (
       <Menu className={styles.menu} selectedKeys={[]} onClick={this.onMenuClick}>
         {menu && (
-          <Menu.Item key="center">
+          <Menu.Item key="dashboard">
             <UserOutlined />
             Dashboard
           </Menu.Item>

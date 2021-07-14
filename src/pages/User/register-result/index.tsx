@@ -21,13 +21,9 @@ const RegisterResult: React.FC<IRouteProps> = ({ location }) => (
     status="success"
     title={
       <div className={styles.title}>
-        <FormattedMessage
-          id="userandregister-result.register-result.msg"
-          values={{ email: (location?.state as any)?.account || 'AntDesign@example.com' }}
-        />
+        Successfully registered.
       </div>
     }
-    subTitle="Successfully registered."
     extra={actions}
   />
 );
