@@ -73,9 +73,35 @@ export default defineConfig({
             },
             {
               path: '/dashboard/categories',
-              name: 'categories',
+              name: 'CategoryManagement',
               icon: 'dashboard',
               component: './categories',
+            },
+            {
+              path: '/dashboard/coupons',
+              name: 'CouponManagement',
+              icon: 'dashboard',
+              routes: [ {
+                path: '/dashboard/coupons',
+                name: 'Coupon List',
+                icon: 'dashboard',
+                component: './coupons',
+                hideInMenu: true,
+              }, {         
+                  path: '/dashboard/coupons/create',
+                  name: 'Create Coupon',
+                  icon: 'dashboard',
+                  component: './coupons/create',
+                  hideInMenu: true,
+                },
+                {         
+                  path: '/dashboard/coupons/:id',
+                  name: 'Update Coupon',
+                  icon: 'dashboard',
+                  component: './coupons/update',
+                  hideInMenu: true,
+                },
+              ]
             },
           ],
         },
@@ -86,6 +112,15 @@ export default defineConfig({
             path: '/',
             name: 'home',
             component: './home',
+          },{
+            path: '/coupons',
+            name: 'Coupons',
+            component: './coupons/card-list',
+          },{
+            path: '/coupons/:id',
+            name: 'Coupons',
+            component: './coupons/detail',
+            hideInMenu: true,
           }, {
             component: '404',
           },]

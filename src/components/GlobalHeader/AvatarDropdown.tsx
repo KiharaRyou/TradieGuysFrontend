@@ -1,5 +1,5 @@
-import { LogoutOutlined, SettingOutlined, UserOutlined } from '@ant-design/icons';
-import { Button, Avatar, Menu, Spin } from 'antd';
+import { LogoutOutlined, ShoppingCartOutlined, UserOutlined } from '@ant-design/icons';
+import { Button, Badge, Menu, Space } from 'antd';
 import React from 'react';
 import type { ConnectProps } from 'umi';
 import { Link, history, connect } from 'umi';
@@ -45,6 +45,7 @@ class AvatarDropdown extends React.Component<GlobalHeaderRightProps> {
         name: '',
       },
       menu,
+      cartCount
     } = this.props;
     const menuHeaderDropdown = (
       <Menu className={styles.menu} selectedKeys={[]} onClick={this.onMenuClick}>
@@ -70,21 +71,21 @@ class AvatarDropdown extends React.Component<GlobalHeaderRightProps> {
     );
     return currentUser && currentUser.username ? (
       <HeaderDropdown overlay={menuHeaderDropdown}>
-        <span className={`${styles.action} ${styles.account}`}>
-          {/* <Avatar size="small" className={styles.avatar} src={currentUser.avatar} alt="avatar" /> */}
+        <Space className={`${styles.action} ${styles.account}`}>
+          <Badge count={cartCount} size="small"><ShoppingCartOutlined style={{fontSize: '22px'}}/></Badge>
           <span className={`${styles.name} anticon`}>{currentUser.username}</span>
-        </span>
+        </Space>
       </HeaderDropdown>
     ) : (
-      <div className={`${styles.action} ${styles.account}`}>
+      <Space className={`${styles.action} ${styles.account}`}>
         <Button><Link to="/user/register">Sign up</Link></Button>
-        {' '}
         <Button><Link to="/user/login">Login</Link></Button>
-      </div>
+      </Space>
     );
   }
 }
 
-export default connect(({ user }: ConnectState) => ({
+export default connect(({ user, global }: ConnectState) => ({
   currentUser: user.currentUser,
+  cartCount: global.cart.length
 }))(AvatarDropdown);

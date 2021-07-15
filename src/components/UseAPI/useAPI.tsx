@@ -1,6 +1,7 @@
 import { useState, useCallback } from 'react';
 import request from '@/utils/request';
 import { urlWithKey } from './utils';
+import { showErrors } from '@/utils/utils';
 
 const serialize = function(obj) {
     var str = [];
@@ -39,7 +40,7 @@ export default function useAPI({url, fetchOptions, handleError}) {
 
     const getDetail = async key => {
         setLoading(true);
-        const res = await request(urlWithKey(url, key), {...fetchOptions, body: newFilter}, handleError);
+        const res = await request(urlWithKey(url, key));
         setLoading(false);
         if(res && !res.error) {
             return res;
@@ -50,21 +51,23 @@ export default function useAPI({url, fetchOptions, handleError}) {
         setLoading(true);
         const res = await request(url, {data: params, method: 'POST'});
         setLoading(false);
-        if(res && !res.error) {
-            read();
+        if(res && res.ok !== false) {
+            //read();
             if(callback) {
                 callback()
             }
             return res;
+        } else {
+            showErrors(res)
         }
     }
 
     const update = async(key, params, callback) => {
         setLoading(true);
-        const res = await request(urlWithKey(url, key), {data: params, method: 'PUT'}, handleError);
+        const res = await request(`${urlWithKey(url, key)}/`, {data: params, method: 'PUT'}, handleError);
         setLoading(false);
         if(res && !res.error) {
-            read();
+            //read();
             callback();
             return res;
         }
@@ -75,7 +78,7 @@ export default function useAPI({url, fetchOptions, handleError}) {
         const res = await request(urlWithKey(url, key), {...fetchOptions, method: 'DELETE'}, handleError);
         setLoading(false);
         if(res && !res.error) {
-            read();
+            //read();
             return res;
         }
     }

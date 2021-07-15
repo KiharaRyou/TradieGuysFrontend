@@ -32,6 +32,7 @@ const errorHandler = (error: { response: Response }): Response => {
       message: `Request error ${status}: ${url}`,
       description: errorText,
     });
+
   } else if (!response) {
     notification.error({
       description: 'Your network is abnormal and you cannot connect to the server',

@@ -3,6 +3,7 @@ import type { Reducer, Effect } from 'umi';
 import type { NoticeIconData } from '@/components/NoticeIcon';
 import { queryNotices } from '@/services/user';
 import type { ConnectState } from './connect.d';
+import { message } from 'antd';
 
 export type NoticeItem = {
   id: string;
@@ -36,9 +37,26 @@ const GlobalModel: GlobalModelType = {
   state: {
     collapsed: false,
     notices: [],
+    cart: []
   },
 
   effects: {
+    *addToCart({payload}, { select, put }) {
+      const itemsInCart = yield select((state: ConnectState) => state.global.cart);
+      const isInCart = itemsInCart.findIndex(item => item.id === payload.id);
+      if(isInCart === -1) {
+        itemsInCart.push(payload);
+          yield put({
+            type: 'addCoupon',
+            payload: itemsInCart
+          })
+      } else {
+        message.warn('This coupon already in the Cart.')
+        return false
+      }
+      
+
+    },
     *fetchNotices(_, { call, put, select }) {
       const data = yield call(queryNotices);
       yield put({
@@ -118,6 +136,12 @@ const GlobalModel: GlobalModelType = {
         ...state,
         collapsed: false,
         notices: state.notices.filter((item): boolean => item.type !== payload),
+      };
+    },
+    addCoupon(state, { payload }) {
+      return {
+        cart: payload,
+        ...state,
       };
     },
   },

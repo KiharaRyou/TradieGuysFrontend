@@ -1,26 +1,35 @@
 import React, { useRef, useState } from 'react';
-import { Button, Tag, Space, Modal } from 'antd'; 
+import { Button, Tag, Space } from 'antd'; 
 import useAPI  from '@/components/UseAPI';
-import CategoryFrom from './CategoryForm';
+import { Link } from 'umi';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
 import ProTable  from '@ant-design/pro-table';
 
-type CategoryManagementProps = {}
+type CouponManagementProps = {}
 
-type CategoryItem = {
+type CouponItem = {
   title: string;
   is_active: boolean;
 };
 
-const CategoryManagement: React.FC<CategoryManagementProps> = (props) => {
+const CouponManagement: React.FC<CouponManagementProps> = (props) => {
   const [editingRow, setEditingRow] = useState(undefined);
   const [isModalVisible, setIsModalVisible] = useState(false);
 
-  const apis = useAPI({url: `/api/categories/`});
+  const apis = useAPI({url: `/api/coupons/`});
   const actionRef = useRef<ActionType>();
   const formRef = useRef();
 
-  const columns: ProColumns<CategoryItem>[] = [
+  const columns: ProColumns<CouponItem>[] = [
+    {
+      title: 'Image',
+      dataIndex: 'image',
+      render: (_, record) => (
+        <div>
+          <img src={record.image} />
+        </div>
+      ),
+    },
     {
       title: 'Title',
       dataIndex: 'title',
@@ -32,6 +41,10 @@ const CategoryManagement: React.FC<CategoryManagementProps> = (props) => {
           },
         ],
       },
+    },
+    {
+      title: 'Price',
+      dataIndex: 'price',
     },
     {
       title: 'Is_Active',
@@ -53,36 +66,17 @@ const CategoryManagement: React.FC<CategoryManagementProps> = (props) => {
       title: 'Option',
       valueType: 'option',
       render: (text, record, _, action) => [
-        <Button
+        <Link to={`/dashboard/coupons/${record.id}`}><Button
         type="primary"
-          key="editable"
-          onClick={ async () => {
-            await setEditingRow(record);
-            
-            setIsModalVisible(true);
-            formRef.current.setFieldsValue({title: record.title, is_active: record.is_active ? 'True' : 'False'});
-          }}
-          
         >
           Edit
-        </Button>
+        </Button></Link>
       ],
     },
   ]
 
-  const showModal = () => {
-    setIsModalVisible(true);
-    formRef.current.setFieldsValue({title: undefined, is_active: 'True'})
-  };
-
-  const handleCancel = () => {
-    setIsModalVisible(false);
-    setEditingRow(undefined);
-  };
-
-
   return <div>
-    <ProTable<CategoryItem>
+    <ProTable<CouponItem>
       columns={columns}
       actionRef={actionRef}
       request={async (params = {}, sort, filter) => {
@@ -105,17 +99,17 @@ const CategoryManagement: React.FC<CategoryManagementProps> = (props) => {
         pageSize: 10,
       }}
       dateFormatter="string"
-      headerTitle="Category"
-      toolBarRender={() => [<Button type="primary" onClick={showModal}>
-        Create
-      </Button>]}
+      headerTitle="Coupons"
+      toolBarRender={() => [<Link to="/dashboard/coupons/create"><Button type="primary">
+      Create
+    </Button></Link>]}
     />
-     <Modal title="Category" visible={isModalVisible} footer={null} onCancel={handleCancel} forceRender>
-        <CategoryFrom
+     {/* <Modal title="Coupon" visible={isModalVisible} footer={null} onCancel={handleCancel} forceRender>
+        <CouponFrom
           ref={formRef}
           onSubmit={values => {
             if(editingRow && editingRow.id) {
-              apis.update(editingRow.id, values, () => {
+              apis.update(`${editingRow.id}/`, values, () => {
                 actionRef.current?.reload();
                   setIsModalVisible(false);
               });
@@ -127,9 +121,9 @@ const CategoryManagement: React.FC<CategoryManagementProps> = (props) => {
             }
           }}
         />
-     </Modal>
+     </Modal> */}
      
   </div>
 }
 
-export default CategoryManagement;
+export default CouponManagement;

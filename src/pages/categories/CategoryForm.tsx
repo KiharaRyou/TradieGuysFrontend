@@ -23,8 +23,8 @@ const CategoryForm = forwardRef((props, ref) => {
           ref={formRef}
           onFinish={values => onSubmit(values)}
         >
-          <Form.Item label="Title" name="title"><Input /></Form.Item>
-          <Form.Item label="Is_active" name="is_active">
+          <Form.Item label="Title" name="title" rules={[{ required: true }]}><Input /></Form.Item>
+          <Form.Item label="Is_active" name="is_active" rules={[{ required: true }]}>
             <Select>
               <Select.Option value="True">Yes</Select.Option>
               <Select.Option value="False">No</Select.Option>
